@@ -11,6 +11,7 @@ public class UserDomain implements RequestUser {
 
     private final ObtainUser obtainUser;
 
+
     public UserDomain(ObtainUser obtainUser) {
         this.obtainUser = obtainUser;
     }
@@ -32,11 +33,11 @@ public class UserDomain implements RequestUser {
 
     @Override
     public void updateUser(User user) {
-        //TODO
+        obtainUser.updateUser(user);
     }
 
     @Override
     public void deleteUserById(int userId) {
-        //TODO
+        obtainUser.deleteUserById(userId);
     }
 }
