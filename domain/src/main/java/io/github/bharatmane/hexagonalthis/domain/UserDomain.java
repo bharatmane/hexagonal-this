@@ -32,11 +32,11 @@ public class UserDomain implements RequestUser {
 
     @Override
     public void updateUser(User user) {
-        //TBD
+        //TODO
     }
 
     @Override
     public void deleteUserById(int userId) {
-        //TBD
+        //TODO
     }
 }
