@@ -64,24 +64,24 @@
             <dependency>
                 <groupId>io.github.bharatmane</groupId>
                 <artifactId>console-adapter</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <!-- domain -->
             <dependency>
                 <groupId>io.github.bharatmane</groupId>
                 <artifactId>domain</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.bharatmane</groupId>
                 <artifactId>domain-api</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
             <!-- right adapter -->
             <dependency>
                 <groupId>io.github.bharatmane</groupId>
                 <artifactId>jpa-adapter</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -147,8 +147,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
