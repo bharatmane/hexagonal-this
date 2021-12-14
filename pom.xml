@@ -10,9 +10,10 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>domain-api</module>
-        <module>domain</module>
         <module>jpa-adapter</module>
         <module>console-adapter</module>
+        <module>domain</module>
+        <module>bootstrap</module>
     </modules>
 
     <properties>
@@ -31,6 +32,18 @@
         <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.coverage.jacoco.xmlReportPath>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPath>
+        <!-- plugins -->
+        <cukedoctor-maven-plugin.version>3.7.0</cukedoctor-maven-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-enforcer-plugin>3.0.0</maven-enforcer-plugin>
+        <arch-unit-maven-plugin.version>2.8.0</arch-unit-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <jib-maven.plugin.version>3.1.4</jib-maven.plugin.version>
+        <git-code-format-maven-plugin.version>3.3</git-code-format-maven-plugin.version>
+        <githook-maven-plugin.version>1.0.5</githook-maven-plugin.version>
+        <pitest-maven-plugin.version>1.7.3</pitest-maven-plugin.version>
+        <pitest-junit5-plugin.version>0.15</pitest-junit5-plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -47,6 +60,28 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.github.bharatmane</groupId>
+                <artifactId>console-adapter</artifactId>
+                <version>${parent.version}</version>
+            </dependency>
+            <!-- domain -->
+            <dependency>
+                <groupId>io.github.bharatmane</groupId>
+                <artifactId>domain</artifactId>
+                <version>${parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.bharatmane</groupId>
+                <artifactId>domain-api</artifactId>
+                <version>${parent.version}</version>
+            </dependency>
+            <!-- right adapter -->
+            <dependency>
+                <groupId>io.github.bharatmane</groupId>
+                <artifactId>jpa-adapter</artifactId>
+                <version>${parent.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -79,10 +114,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
@@ -91,5 +122,165 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
+
     </dependencies>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <directory>target</directory>
+        <outputDirectory>target/classes</outputDirectory>
+        <testOutputDirectory>target/test-classes</testOutputDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <testFailureIgnore>false</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin}</version>
+                <configuration>
+                    <rules>
+                        <dependencyConvergence/>
+                        <requireReleaseDeps>
+                            <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+                            <excludes>
+                                <exclude>${project.groupId}:*</exclude>
+                            </excludes>
+                        </requireReleaseDeps>
+                    </rules>
+                    <fail>true</fail>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.cosium.code</groupId>
+                <artifactId>git-code-format-maven-plugin</artifactId>
+                <version>${git-code-format-maven-plugin.version}</version>
+                <executions>
+                    <!-- On commit, format the modified java files -->
+                    <execution>
+                        <id>install-formatter-hook</id>
+                        <goals>
+                            <goal>install-hooks</goal>
+                        </goals>
+                    </execution>
+                    <!-- On Maven verify phase, fail if any file
+                    (including unmodified) is badly formatted -->
+                    <execution>
+                        <id>validate-code-format</id>
+                        <goals>
+                            <goal>validate-code-format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.github.phillipuniverse</groupId>
+                <artifactId>githook-maven-plugin</artifactId>
+                <version>${githook-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>install</goal>
+                        </goals>
+                        <configuration>
+                            <hooks>
+                                <pre-commit>
+                                    echo "Validating..."
+                                    exec mvn test
+                                    echo "Formatting code..."
+                                    exec mvn git-code-format:format-code
+                                    echo "Validating format..."
+                                    exec mvn git-code-format:validate-code-format
+                                </pre-commit>
+                            </hooks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.societegenerale.commons</groupId>
+                    <artifactId>arch-unit-maven-plugin</artifactId>
+                    <version>${arch-unit-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>arch-test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-maven.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

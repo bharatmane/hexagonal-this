@@ -1,13 +1,12 @@
 package io.github.bharatmane.hexagonalthis.repository;
 
-import io.github.bharatmane.hexagonalthis.domain.model.User;
-import io.github.bharatmane.hexagonalthis.domain.port.ObtainUser;
+import io.github.bharatmane.hexagonalthis.domainapi.model.User;
+import io.github.bharatmane.hexagonalthis.domainapi.model.port.ObtainUser;
 import io.github.bharatmane.hexagonalthis.repository.dao.UserDao;
 import io.github.bharatmane.hexagonalthis.repository.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class UserRepository implements ObtainUser {
     private final UserDao userDao;
@@ -18,7 +17,7 @@ public class UserRepository implements ObtainUser {
 
     @Override
     public List<User> getAllUsers(){
-        return userDao.findAll().stream().map(UserEntity::toModel).collect(Collectors.toList());
+        return userDao.findAll().stream().map(UserEntity::toModel).toList();
     }
 
     @Override
@@ -34,11 +33,11 @@ public class UserRepository implements ObtainUser {
 
     @Override
     public void updateUser(User user) {
-
+        //TBD
     }
 
     @Override
     public void deleteUserById(int userId) {
-
+        //TBD
     }
 }

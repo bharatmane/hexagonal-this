@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://john.db.elephantsql.com/tcbpwonz
+    username: tcbpwonz
+    password: yCUCbNhWi-TYAKK1haMLKvXFAv5ojYMQ
+    platform: postgres
+
+  jpa:
+    generate-ddl: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none

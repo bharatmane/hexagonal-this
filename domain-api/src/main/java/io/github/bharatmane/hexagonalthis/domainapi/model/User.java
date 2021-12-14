@@ -1,4 +1,4 @@
-package io.github.bharatmane.hexagonalthis.domain.model;
+package io.github.bharatmane.hexagonalthis.domainapi.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,39 +1,37 @@
 package io.github.bharatmane.hexagonalthis.repository.entity;
 
-import io.github.bharatmane.hexagonalthis.domain.model.User;
+import io.github.bharatmane.hexagonalthis.domainapi.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
-@Table(name = "T_User")
+@Table(name = "t_user", schema = "cruddemo")
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Audited
 public class UserEntity {
-    @Column(name = "User_ID")
-    private int userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
+    private int id;
 
-    @Column(name = "First_Name")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "Last_Name")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "Email")
+    @Column(name = "email")
     private String email;
 
     public User toModel() {
-        return User.builder().userId(userId).firstName(firstName).lastName(lastName).email(email).build();
+        return User.builder().userId(id).firstName(firstName).lastName(lastName).email(email).build();
     }
 }
 
