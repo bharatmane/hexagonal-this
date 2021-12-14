@@ -7,6 +7,7 @@ import io.github.bharatmane.hexagonalthis.repository.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserRepository implements ObtainUser {
     private final UserDao userDao;
@@ -17,7 +18,7 @@ public class UserRepository implements ObtainUser {
 
     @Override
     public List<User> getAllUsers(){
-        return userDao.findAll().stream().map(UserEntity::toModel).toList();
+        return userDao.findAll().stream().map(UserEntity::toModel).collect(Collectors.toList());
     }
 
     @Override
